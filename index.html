@@ -12,6 +12,11 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Text copy aur highlight rokne ke liye */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -74,11 +79,10 @@
         /* ================= PAGE 1 ================= */
         .welcome-text { font-size: 2.5rem; text-shadow: 0px 2px 10px rgba(0,0,0,0.5); }
 
-        /* ================= PAGE 2 (QUIZ) ================= */
+        /* ================= PAGE 2 ================= */
         .progress { font-size: 0.9rem; color: #ddd; margin-bottom: 15px; }
         h2 { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.4; }
         
-        /* Quiz Input Box */
         #quizInput {
             width: 100%;
             padding: 12px;
@@ -137,7 +141,14 @@
             transition: transform 0.2s; 
         }
         .photo-box .img-container { width: 100%; height: 100%; overflow: hidden; background: #000; }
-        .photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .photo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            pointer-events: none; 
+            -webkit-user-drag: none;
+        }
 
         .box-1 { top: 10%; left: 6%; width: 65%; height: 30%; --final-rotation: -5deg; }
         .box-2 { bottom: 12%; left: 6%; width: 60%; height: 32%; --final-rotation: 4deg; }
@@ -160,7 +171,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -180,6 +191,7 @@
             box-shadow: 0 0 30px rgba(255,255,255,0.2);
             transform: scale(0.8);
             transition: transform 0.3s ease;
+            pointer-events: none; 
         }
 
         .zoom-overlay.active img {
@@ -202,14 +214,25 @@
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(5px);
+            z-index: 1001;
+            pointer-events: auto; 
         }
         .close-btn:hover { background: rgba(255, 255, 255, 0.4); }
+
+        /* Warning Text */
+        .warning-text {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- ================= PAGE 1 ================= -->
+    <!-- ================= PAGE 1 (Welcome) ================= -->
     <div id="page1" class="page active">
         <div class="glass-box">
             <h1 class="welcome-text">Welcome</h1>
@@ -217,24 +240,18 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 2 (QUIZ) ================= -->
+    <!-- ================= PAGE 2 (Quiz) ================= -->
     <div id="page2" class="page">
         <div class="glass-box">
             <div class="progress" id="progressText">Puzzle 1 of 5</div>
             <h2 id="questionText">Loading...</h2>
-            
-            <!-- Answer Input Field -->
             <input type="text" id="quizInput" placeholder="Type your answer here..." autocomplete="off">
-            
-            <!-- Submit Button -->
             <button onclick="checkQuizAnswer()">Submit</button>
-            
-            <!-- Feedback Message -->
             <div class="feedback" id="quizFeedback"></div>
         </div>
     </div>
 
-    <!-- ================= PAGE 3 ================= -->
+    <!-- ================= PAGE 3 (Password) ================= -->
     <div id="page3" class="page">
         <div class="glass-box" id="lockBox">
             <div class="lock-icon" id="lockIcon">🔒</div>
@@ -247,35 +264,36 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 4 ================= -->
+    <!-- ================= PAGE 4 (Photos) ================= -->
     <div id="page4" class="page">
         <div class="collage-container">
             
             <div class="photo-box box-1" id="box1" onclick="openZoom('photo1.jpg')">
                 <div class="img-container">
-                    <img src="photo1.jpg" alt="Photo 1">
+                    <img src="photo1.jpg" alt="Photo 1" oncontextmenu="return false;">
                 </div>
             </div>
 
             <div class="photo-box box-2" id="box2" onclick="openZoom('photo2.jpg')">
                 <div class="img-container">
-                    <img src="photo2.jpg" alt="Photo 2">
+                    <img src="photo2.jpg" alt="Photo 2" oncontextmenu="return false;">
                 </div>
             </div>
 
             <div class="photo-box box-3" id="box3" onclick="openZoom('photo3.jpg')">
                 <div class="img-container">
-                    <img src="photo3.jpg" alt="Photo 3">
+                    <img src="photo3.jpg" alt="Photo 3" oncontextmenu="return false;">
                 </div>
             </div>
 
         </div>
+        <div class="warning-text">⚠️ Screenshot or Download is prohibited</div>
     </div>
 
     <!-- 🔥 ZOOM OVERLAY -->
     <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom()">
         <button class="close-btn" onclick="closeZoom()">✖</button>
-        <img id="zoomedImage" src="" alt="Zoomed Photo">
+        <img id="zoomedImage" src="" alt="Zoomed Photo" oncontextmenu="return false;">
     </div>
 
     <!-- ================= JAVASCRIPT ================= -->
@@ -291,28 +309,13 @@
             if (pageNum === 4) triggerPhotoAnimations();
         }
 
-        // 🔥 QUIZ LOGIC (Only Text Input)
+        // QUIZ LOGIC
         const quizData = [
-            {
-                question: "Einstein ki equation E = mc² mein, kaunsa letter Speed of Light ko darshata hai?",
-                answer: "C"
-            },
-            {
-                question: "Is series ka agla letter kya hoga? B, E, H, K, N, ?",
-                answer: "Q"
-            },
-            {
-                question: "Agar kisi object ka wazan Earth par 36 N hai, to Moon par uska wazan kitne Newton hoga?",
-                answer: "6"
-            },
-            {
-                question: "Heptagon (saptbhuj) mein kitni sides (bhujaayein) hoti hain?",
-                answer: "7"
-            },
-            {
-                question: "Agar points (2, 4) aur (6, y) ka mid-point (4, 5) hai, to y ka maan kya hoga?",
-                answer: "6"
-            }
+            { question: "Einstein ki equation E = mc² mein, kaunsa letter Speed of Light ko darshata hai?", answer: "C" },
+            { question: "Is series ka agla letter kya hoga? B, E, H, K, N, ?", answer: "Q" },
+            { question: "Agar kisi object ka wazan Earth par 36 N hai, to Moon par uska wazan kitne Newton hoga?", answer: "6" },
+            { question: "Heptagon (saptbhuj) mein kitni sides (bhujaayein) hoti hain?", answer: "7" },
+            { question: "Agar points (2, 4) aur (6, y) ka mid-point (4, 5) hai, to y ka maan kya hoga?", answer: "6" }
         ];
 
         let currentQIndex = 0;
@@ -321,10 +324,7 @@
             const data = quizData[currentQIndex];
             document.getElementById('progressText').innerText = `Puzzle ${currentQIndex + 1} of 5`;
             document.getElementById('questionText').innerText = data.question;
-            
-            // Input box clear karo aur feedback hatao
-            const inputField = document.getElementById('quizInput');
-            inputField.value = "";
+            document.getElementById('quizInput').value = "";
             document.getElementById('quizFeedback').innerText = "";
             document.getElementById('quizFeedback').className = "feedback";
         }
@@ -336,10 +336,9 @@
             const correctAnswer = quizData[currentQIndex].answer.toUpperCase();
 
             if (userAnswer === correctAnswer) {
-                // Sahi jawab
                 feedback.innerText = "✅ Correct!";
                 feedback.className = "feedback correct";
-                inputField.disabled = true; // Input ko band karo
+                inputField.disabled = true; 
 
                 setTimeout(() => {
                     inputField.disabled = false;
@@ -349,16 +348,14 @@
                     } else {
                         nextPage(3); 
                     }
-                }, 1000); // 1 second baad agla sawaal
+                }, 1000); 
             } else {
-                // Galat jawab
                 feedback.innerText = "❌ Wrong Answer, Try again!";
                 feedback.className = "feedback wrong";
                 inputField.value = "";
             }
         }
 
-        // Enter dabane par bhi answer submit ho
         document.getElementById('quizInput').addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -380,12 +377,9 @@
             if (input === CORRECT_PASSWORD) {
                 errorMsg.style.display = 'none';
                 lockIcon.innerText = '🔓';
-                
                 inputField.classList.add('hide');
                 unlockBtn.classList.add('hide');
-                
                 document.getElementById('nextToPage4Btn').classList.remove('hide');
-
             } else {
                 errorMsg.style.display = 'block';
                 lockBox.classList.add('shake');
@@ -409,7 +403,6 @@
         function openZoom(imageSrc) {
             const overlay = document.getElementById('zoomOverlay');
             const zoomedImg = document.getElementById('zoomedImage');
-            
             zoomedImg.src = imageSrc;
             overlay.classList.add('active');
         }
@@ -418,6 +411,11 @@
             const overlay = document.getElementById('zoomOverlay');
             overlay.classList.remove('active');
         }
+
+        // 🔥 LONG PRESS / RIGHT CLICK BAND (Global block)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>
