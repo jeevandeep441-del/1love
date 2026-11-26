@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,6 @@
         }
 
         body {
-            /* Background image same for all pages */
             background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -26,9 +26,8 @@
             color: white;
         }
 
-        /* Har page ek container mein hoga */
         .page {
-            display: none; /* Shuru mein sab chhupe honge */
+            display: none;
             width: 100%;
             height: 100%;
             justify-content: center;
@@ -36,12 +35,10 @@
             flex-direction: column;
         }
 
-        /* Jo page active hoga wo dikhega */
         .page.active {
             display: flex;
         }
 
-        /* Glassmorphism Container Box */
         .glass-box {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -56,7 +53,6 @@
             position: relative;
         }
 
-        /* Buttons */
         button {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -75,33 +71,34 @@
         button:hover { background: rgba(255, 255, 255, 0.4); }
         button:active { transform: scale(0.90); }
 
-        /* ================= PAGE 1 (Welcome) ================= */
-        .welcome-text {
-            font-size: 2.5rem;
-            text-shadow: 0px 2px 10px rgba(0,0,0,0.5);
-        }
+        /* ================= PAGE 1 ================= */
+        .welcome-text { font-size: 2.5rem; text-shadow: 0px 2px 10px rgba(0,0,0,0.5); }
 
-        /* ================= PAGE 2 (Quiz) ================= */
+        /* ================= PAGE 2 (QUIZ) ================= */
         .progress { font-size: 0.9rem; color: #ddd; margin-bottom: 15px; }
-        h2 { font-size: 1.3rem; margin-bottom: 20px; line-height: 1.4; }
+        h2 { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.4; }
         
-        .option-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        /* Quiz Input Box */
+        #quizInput {
+            width: 100%;
             padding: 12px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
             text-align: center;
+            outline: none;
             font-weight: 600;
-            transition: all 0.2s;
+            margin-top: 10px;
         }
-        .option-btn:hover { background: rgba(255, 255, 255, 0.3); }
-        .correct { background: rgba(0, 255, 0, 0.4) !important; border-color: #00ff00 !important; }
-        .wrong { background: rgba(255, 0, 0, 0.4) !important; border-color: #ff0000 !important; }
+        #quizInput::placeholder { color: #ccc; font-weight: normal; }
 
-        /* ================= PAGE 3 (Password) ================= */
+        .feedback { font-size: 1rem; font-weight: bold; margin-top: 10px; height: 20px; }
+        .feedback.correct { color: #00ff00; }
+        .feedback.wrong { color: #ff4d4d; }
+
+        /* ================= PAGE 3 ================= */
         .lock-icon { font-size: 3rem; margin-bottom: 10px; }
         input {
             width: 100%;
@@ -122,7 +119,7 @@
         .shake { animation: shake 0.4s ease-in-out; }
         .hide { display: none !important; }
 
-        /* ================= PAGE 4 (Photos) ================= */
+        /* ================= PAGE 4 ================= */
         .collage-container {
             width: 100%;
             height: 100%;
@@ -136,6 +133,8 @@
             box-shadow: 0px 10px 25px rgba(0,0,0,0.6);
             opacity: 0;
             border-radius: 2px;
+            cursor: pointer; 
+            transition: transform 0.2s; 
         }
         .photo-box .img-container { width: 100%; height: 100%; overflow: hidden; background: #000; }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -152,11 +151,65 @@
         .animate-1 { animation: dropIn 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; z-index: 3; }
         .animate-2 { animation: dropIn 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.6s; z-index: 2; }
         .animate-3 { animation: dropIn 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.2s; z-index: 4; }
+
+        /* 🔥 ZOOM OVERLAY */
+        .zoom-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .zoom-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .zoom-overlay img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .zoom-overlay.active img {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.4); }
+
     </style>
 </head>
 <body>
 
-    <!-- ================= PAGE 1: WELCOME ================= -->
+    <!-- ================= PAGE 1 ================= -->
     <div id="page1" class="page active">
         <div class="glass-box">
             <h1 class="welcome-text">Welcome</h1>
@@ -164,16 +217,24 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 2: QUIZ ================= -->
+    <!-- ================= PAGE 2 (QUIZ) ================= -->
     <div id="page2" class="page">
         <div class="glass-box">
             <div class="progress" id="progressText">Puzzle 1 of 5</div>
             <h2 id="questionText">Loading...</h2>
-            <div id="optionsContainer"></div>
+            
+            <!-- Answer Input Field -->
+            <input type="text" id="quizInput" placeholder="Type your answer here..." autocomplete="off">
+            
+            <!-- Submit Button -->
+            <button onclick="checkQuizAnswer()">Submit</button>
+            
+            <!-- Feedback Message -->
+            <div class="feedback" id="quizFeedback"></div>
         </div>
     </div>
 
-    <!-- ================= PAGE 3: PASSWORD ================= -->
+    <!-- ================= PAGE 3 ================= -->
     <div id="page3" class="page">
         <div class="glass-box" id="lockBox">
             <div class="lock-icon" id="lockIcon">🔒</div>
@@ -186,26 +247,23 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 4: PHOTOS ================= -->
+    <!-- ================= PAGE 4 ================= -->
     <div id="page4" class="page">
         <div class="collage-container">
             
-            <!-- Photo 1 -->
-            <div class="photo-box box-1" id="box1">
+            <div class="photo-box box-1" id="box1" onclick="openZoom('photo1.jpg')">
                 <div class="img-container">
                     <img src="photo1.jpg" alt="Photo 1">
                 </div>
             </div>
 
-            <!-- Photo 2 -->
-            <div class="photo-box box-2" id="box2">
+            <div class="photo-box box-2" id="box2" onclick="openZoom('photo2.jpg')">
                 <div class="img-container">
                     <img src="photo2.jpg" alt="Photo 2">
                 </div>
             </div>
 
-            <!-- Photo 3 -->
-            <div class="photo-box box-3" id="box3">
+            <div class="photo-box box-3" id="box3" onclick="openZoom('photo3.jpg')">
                 <div class="img-container">
                     <img src="photo3.jpg" alt="Photo 3">
                 </div>
@@ -214,34 +272,47 @@
         </div>
     </div>
 
+    <!-- 🔥 ZOOM OVERLAY -->
+    <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom()">
+        <button class="close-btn" onclick="closeZoom()">✖</button>
+        <img id="zoomedImage" src="" alt="Zoomed Photo">
+    </div>
+
     <!-- ================= JAVASCRIPT ================= -->
     <script>
-        // -----------------------------------------
-        // PAGE NAVIGATION LOGIC
-        // -----------------------------------------
+        // PAGE NAVIGATION
         function nextPage(pageNum) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById('page' + pageNum).classList.add('active');
 
-            if (pageNum === 2) {
-                loadQuestion();
-            }
-            if (pageNum === 4) {
-                triggerPhotoAnimations();
-            }
+            if (pageNum === 2) loadQuestion();
+            if (pageNum === 4) triggerPhotoAnimations();
         }
 
-        // -----------------------------------------
-        // PAGE 2: QUIZ LOGIC
-        // -----------------------------------------
+        // 🔥 QUIZ LOGIC (Only Text Input)
         const quizData = [
-            { question: "Earth par 36N wazan, Moon par kitna?", options: ["12 N", "6 N", "36 N", "0 N"], answer: "6 N" },
-            { question: "Series: B, E, H, K, N, ?", options: ["P", "Q", "R", "S"], answer: "Q" },
-            { question: "Heptagon mein kitni sides hoti hain?", options: ["5", "6", "7", "8"], answer: "7" },
-            { question: "E = mc² mein Speed of Light kaunsa letter hai?", options: ["E", "M", "C", "G"], answer: "C" },
-            { question: "Mid-point (4, 5) ke liye y ka maan?", options: ["4", "5", "6", "7"], answer: "6" }
+            {
+                question: "Einstein ki equation E = mc² mein, kaunsa letter Speed of Light ko darshata hai?",
+                answer: "C"
+            },
+            {
+                question: "Is series ka agla letter kya hoga? B, E, H, K, N, ?",
+                answer: "Q"
+            },
+            {
+                question: "Agar kisi object ka wazan Earth par 36 N hai, to Moon par uska wazan kitne Newton hoga?",
+                answer: "6"
+            },
+            {
+                question: "Heptagon (saptbhuj) mein kitni sides (bhujaayein) hoti hain?",
+                answer: "7"
+            },
+            {
+                question: "Agar points (2, 4) aur (6, y) ka mid-point (4, 5) hai, to y ka maan kya hoga?",
+                answer: "6"
+            }
         ];
 
         let currentQIndex = 0;
@@ -251,38 +322,51 @@
             document.getElementById('progressText').innerText = `Puzzle ${currentQIndex + 1} of 5`;
             document.getElementById('questionText').innerText = data.question;
             
-            const optionsDiv = document.getElementById('optionsContainer');
-            optionsDiv.innerHTML = "";
-
-            data.options.forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = "option-btn";
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(btn, data.answer);
-                optionsDiv.appendChild(btn);
-            });
+            // Input box clear karo aur feedback hatao
+            const inputField = document.getElementById('quizInput');
+            inputField.value = "";
+            document.getElementById('quizFeedback').innerText = "";
+            document.getElementById('quizFeedback').className = "feedback";
         }
 
-        function checkAnswer(selectedBtn, correctAnswer) {
-            if (selectedBtn.innerText === correctAnswer) {
-                selectedBtn.classList.add('correct');
+        function checkQuizAnswer() {
+            const inputField = document.getElementById('quizInput');
+            const userAnswer = inputField.value.trim().toUpperCase();
+            const feedback = document.getElementById('quizFeedback');
+            const correctAnswer = quizData[currentQIndex].answer.toUpperCase();
+
+            if (userAnswer === correctAnswer) {
+                // Sahi jawab
+                feedback.innerText = "✅ Correct!";
+                feedback.className = "feedback correct";
+                inputField.disabled = true; // Input ko band karo
+
                 setTimeout(() => {
+                    inputField.disabled = false;
                     currentQIndex++;
                     if (currentQIndex < quizData.length) {
                         loadQuestion();
                     } else {
                         nextPage(3); 
                     }
-                }, 600);
+                }, 1000); // 1 second baad agla sawaal
             } else {
-                selectedBtn.classList.add('wrong');
-                setTimeout(() => { selectedBtn.classList.remove('wrong'); }, 600);
+                // Galat jawab
+                feedback.innerText = "❌ Wrong Answer, Try again!";
+                feedback.className = "feedback wrong";
+                inputField.value = "";
             }
         }
 
-        // -----------------------------------------
-        // PAGE 3: PASSWORD LOGIC
-        // -----------------------------------------
+        // Enter dabane par bhi answer submit ho
+        document.getElementById('quizInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkQuizAnswer();
+            }
+        });
+
+        // PASSWORD LOGIC
         const CORRECT_PASSWORD = "6Q7C6";
 
         function checkPassword() {
@@ -310,9 +394,7 @@
             }
         }
 
-        // -----------------------------------------
-        // PAGE 4: ANIMATION LOGIC
-        // -----------------------------------------
+        // PHOTO ANIMATIONS
         function triggerPhotoAnimations() {
             document.getElementById('box1').className = 'photo-box box-1';
             document.getElementById('box2').className = 'photo-box box-2';
@@ -322,6 +404,20 @@
             setTimeout(() => { document.getElementById('box2').classList.add('animate-2'); }, 700);
             setTimeout(() => { document.getElementById('box3').classList.add('animate-3'); }, 1400);
         }
+
+        // 🔥 ZOOM LOGIC
+        function openZoom(imageSrc) {
+            const overlay = document.getElementById('zoomOverlay');
+            const zoomedImg = document.getElementById('zoomedImage');
+            
+            zoomedImg.src = imageSrc;
+            overlay.classList.add('active');
+        }
+
+        function closeZoom() {
+            const overlay = document.getElementById('zoomOverlay');
+            overlay.classList.remove('active');
+        }
     </script>
 </body>
-  </html>
+</html>
