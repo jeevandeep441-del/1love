@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +11,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Text copy aur highlight rokne ke liye */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -309,13 +307,28 @@
             if (pageNum === 4) triggerPhotoAnimations();
         }
 
-        // QUIZ LOGIC
+        // 🔥 QUIZ LOGIC (Correct Sequence: 6 - Q - 7 - C - 6)
         const quizData = [
-            { question: "Einstein ki equation E = mc² mein, kaunsa letter Speed of Light ko darshata hai?", answer: "C" },
-            { question: "Is series ka agla letter kya hoga? B, E, H, K, N, ?", answer: "Q" },
-            { question: "Agar kisi object ka wazan Earth par 36 N hai, to Moon par uska wazan kitne Newton hoga?", answer: "6" },
-            { question: "Heptagon (saptbhuj) mein kitni sides (bhujaayein) hoti hain?", answer: "7" },
-            { question: "Agar points (2, 4) aur (6, y) ka mid-point (4, 5) hai, to y ka maan kya hoga?", answer: "6" }
+            { 
+                question: "Agar kisi object ka wazan Earth par 36 N hai, to Moon par uska wazan kitne Newton hoga?", 
+                answer: "6" 
+            },
+            { 
+                question: "Is series ka agla letter kya hoga? B, E, H, K, N, ?", 
+                answer: "Q" 
+            },
+            { 
+                question: "Heptagon (saptbhuj) mein kitni sides (bhujaayein) hoti hain?", 
+                answer: "7" 
+            },
+            { 
+                question: "Einstein ki equation E = mc² mein, kaunsa letter Speed of Light ko darshata hai?", 
+                answer: "C" 
+            },
+            { 
+                question: "Agar points (2, 4) aur (6, y) ka mid-point (4, 5) hai, to y ka maan kya hoga?", 
+                answer: "6" 
+            }
         ];
 
         let currentQIndex = 0;
@@ -412,7 +425,7 @@
             overlay.classList.remove('active');
         }
 
-        // 🔥 LONG PRESS / RIGHT CLICK BAND (Global block)
+        // 🔥 LONG PRESS / RIGHT CLICK BAND
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
